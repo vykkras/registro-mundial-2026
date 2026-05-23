@@ -394,6 +394,9 @@
         <div id="result-counter" style="display:none; margin-top:14px; font-size:12px; color:rgba(255,255,255,0.45); letter-spacing:2px; text-transform:uppercase;">
           <span id="counter-result-num">—</span> personas han caído en este enlace
         </div>
+        <div id="result-media" style="display:none; margin-top:10px; font-size:13px; color:rgba(255,255,255,0.55); letter-spacing:1px;">
+          media de la clase: <span id="media-num" style="color:#5dfc5d; font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:2px;">—</span><span style="color:rgba(255,255,255,0.3); font-size:11px;">/3</span>
+        </div>
         <button class="retry-btn" onclick="resetQuiz()">↺ Repetir tanda</button>
       </div>
     </div>
@@ -453,6 +456,23 @@
       if (answered.every(Boolean)) showResult();
     }
 
+    async function saveScore(s) {
+      try {
+        const BASE = 'https://api.countapi.xyz';
+        const NS   = 'has-picado-escuela-2026';
+        if (s > 0) await fetch(`${BASE}/update/${NS}/quiz-puntos?amount=${s}`);
+        const [partData, puntosData] = await Promise.all([
+          fetch(`${BASE}/hit/${NS}/quiz-participantes`).then(r => r.json()),
+          fetch(`${BASE}/get/${NS}/quiz-puntos`).then(r => r.json()),
+        ]);
+        const media = partData.value > 0
+          ? (( puntosData.value || 0) / partData.value).toFixed(1)
+          : '—';
+        document.getElementById('media-num').textContent = media;
+        document.getElementById('result-media').style.display = 'block';
+      } catch(e) { /* silencioso */ }
+    }
+
     function showResult() {
       const res = document.getElementById('result');
       res.classList.add('visible');
@@ -475,6 +495,7 @@
       if (score === 1) document.getElementById('result-gif-kid').style.display = 'block';
       document.getElementById('counter-result-num').textContent = document.getElementById('counter').textContent;
       document.getElementById('result-counter').style.display = 'block';
+      saveScore(score);
     }
 
     function resetQuiz() {
@@ -485,6 +506,7 @@
       document.getElementById('result-gif-fail').style.display = 'none';
       document.getElementById('result-gif-kid').style.display = 'none';
       document.getElementById('result-counter').style.display = 'none';
+      document.getElementById('result-media').style.display = 'none';
       [0,1,2].forEach(q => {
         document.querySelectorAll(`#q${q} .opt`).forEach(b => {
           b.classList.remove('correct','wrong','locked');
