@@ -31,6 +31,33 @@
       justify-content: center;
     }
 
+    /* ── DESKTOP: fit everything above fold ── */
+    @media (min-width: 768px) {
+      body {
+        padding: 18px 24px;
+        overflow: hidden;
+        height: 100vh;
+        align-items: center;
+      }
+      body.quiz-open {
+        overflow-y: auto;
+        height: auto;
+        min-height: 100vh;
+        align-items: flex-start;
+      }
+      h1 { font-size: 80px; margin-bottom: 6px; }
+      .subtitle-hook { margin-bottom: 14px; font-size: 13px; }
+      .counter-wrap { padding: 10px 20px; margin-bottom: 14px; }
+      .counter-number { font-size: 46px; }
+      .counter-label { font-size: 9px; }
+      .counter-sub { font-size: 11px; }
+      .gif-wrap { margin-bottom: 14px; max-width: 380px; max-height: 180px; overflow: hidden; }
+      .info { padding: 12px 16px; font-size: 13px; line-height: 1.6; margin-bottom: 14px; }
+      .castigo-btn { padding: 14px 24px; font-size: 22px; margin-bottom: 10px; }
+      .no-escape { margin-bottom: 0; }
+      .badge { margin-bottom: 12px; }
+    }
+
     /* field lines background */
     body::before {
       content: '';
@@ -405,6 +432,7 @@
       document.getElementById('quiz').classList.add('visible');
       document.querySelector('.castigo-btn').style.display = 'none';
       document.querySelector('.no-escape').style.display   = 'none';
+      document.body.classList.add('quiz-open');
       document.getElementById('quiz').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
@@ -430,11 +458,12 @@
       document.getElementById('score-display').textContent = score + '/3';
 
       const msgs = [
-        '🟥 Expulsado. Necesitas más entrenamiento. ¡Repasa los conceptos antes del próximo partido!',
-        '🟨 Tarjeta amarilla. Salvaste algún penalti, pero aún hay margen de mejora.',
+        '🟥 Expulsado. Cero palos parados. ¡Repasa los conceptos antes del próximo partido!',
+        '🟥 Tarjeta roja. Solo uno parado. Necesitas mucho más entrenamiento.',
+        '🟨 Tarjeta amarilla. Casi, casi. Un penalti se coló, pero vas por buen camino.',
         '🏆 Hat-trick. Portero imbatible. Ya sabes reconocer los ataques de phishing.',
       ];
-      const clr = ['#ff8888','#ffcc44','#5dfc5d'];
+      const clr = ['#ff8888','#ff8888','#ffcc44','#5dfc5d'];
       const msgEl = document.getElementById('result-msg');
       msgEl.textContent = msgs[score];
       document.getElementById('score-display').style.color       = clr[score];
@@ -445,6 +474,7 @@
     function resetQuiz() {
       answered = [false, false, false];
       score    = 0;
+      document.body.classList.remove('quiz-open');
       [0,1,2].forEach(q => {
         document.querySelectorAll(`#q${q} .opt`).forEach(b => {
           b.classList.remove('correct','wrong','locked');
