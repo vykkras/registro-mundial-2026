@@ -9,14 +9,20 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
+    html, body {
+      min-height: 100%;
+    }
+
     body {
       background: #0d0d0d;
       min-height: 100vh;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
       font-family: 'Inter', sans-serif;
-      overflow: hidden;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 40px 16px;
     }
 
     .bg-flash {
@@ -36,14 +42,24 @@
       position: relative;
       z-index: 1;
       text-align: center;
-      padding: 48px 40px;
+      padding: 40px 28px;
       max-width: 640px;
-      width: 90%;
+      width: 100%;
       background: rgba(255,255,255,0.04);
       border: 1px solid rgba(255,255,255,0.08);
       border-radius: 16px;
       backdrop-filter: blur(4px);
       animation: drop 0.6s cubic-bezier(0.22,1,0.36,1) both;
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 24px 12px; }
+      .card { padding: 32px 20px; border-radius: 12px; }
+      h1 { font-size: clamp(60px, 20vw, 90px); }
+      .counter-number { font-size: 60px; }
+      .bait-line { font-size: 14px; }
+      .subtitle { font-size: 14px; }
+      .fish { font-size: 36px; }
     }
 
     @keyframes drop {
